@@ -1,0 +1,71 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <title>{{Title}}</title>
+    <link href="/stylesheets/bootstrap.css" rel="stylesheet">
+
+    <style>
+      .hero-unit{
+        margin-top: 60px;
+      }
+
+    </style>
+
+    <script src="/javascripts/jquery-2.0.3.min.js"></script>
+    <script src="/javascripts/bootstrap.min.js"></script>
+  </head>
+
+  <meta charset="utf-8">
+  <body>
+
+      <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+          <a class="brand" href="/"><img src="/images/facebook_logo.png" class="img-rounded" height="30px" width="30px"> {{Title}}</a>
+          </div>
+      </nav>
+
+
+      <div class="container">
+        <div class="hero-unit">
+          <div>
+            <h2 class="text-center">
+              <img src="/images/facebook_logo.png" class="img-rounded" height="60px" width="60px"><em> {{Title}}</em>
+            </h2>
+          </div>
+          <form style="text-align: center" id="search" method="GET" action="/graph">
+            <div id="error"></div>
+            <div class="form-group">
+              <input id="keyword" name="keyword" type="text" class="form-control" placeholder="Keyword">
+            </div>
+            <div class="btn-group" data-toggle="radio">
+              <label class="btn btn-default btn-large">
+                <input type="radio" name="option" id="people" value="people"> People
+              </label>
+              <label class="btn btn-default btn-large">
+                <input type="radio" name="option" id="companies" value="companies"> Companies
+              </label>
+            </div>
+            <button id="update" class="btn btn-primary btn-large" type="submit">Submit</button>
+          </form>
+        </div>
+      </div>
+
+
+    <script>
+
+      // validate form... make sure proper fields are filled in before submitting... if not
+      //  return error
+      $(document).ready(function() {
+        $('#search').submit(function( event ) {
+          if($('input[type=radio]:checked').size() == 0 || $('#keyword').val() == ''){
+           $('#error').html('<div class="alert alert-danger">Oops, you forgot to fill in a required field.</div>');
+           event.preventDefault();
+         }
+         else{
+          return;
+        }
+      });
+      });
+    </script>
+  </body>
+  </html>
