@@ -40,32 +40,34 @@
 /* intended to state or imply that IBM's licensed program must be    */
 /* used. Any functionally equivalent program may be used.            */
 /*-------------------------------------------------------------------*/
+
+
 var _ = require('underscore');
 var request = require('request');
 var facebook = require('../lib/facebook')
 
+exports.get = function (req, res) {
 // query facebook search API to get recent posts related to specified keyword
 // then send posts through either the Name or Company Text analytics service. 
 // once analytic service processes the posts, do a count of the number of mentions of specific
 // companies or names and return JSON with that information
-exports.get = function (req, res) {
-	facebook.getResults(req.params.keyword, 100, function (err, posts) {
+
+  // get facebook results
+	facebook.getResults(req.params.keyword, 100, 'recent', function (err, texts) {
     if (err) {
       console.log(err);
       return res.json(err);
     }
 
     // check requested type of analytics to be done
-    var annotationType;
-
     if (req.params.option == 'companies') {
-      annotationType = ['com.ibm.langware.en.Company'];
+      var annotationType = ['com.ibm.langware.en.Company'];
     } else if (req.params.option == 'people') {
-      annotationType = ['com.ibm.langware.en.Person'];
+      var annotationType = ['com.ibm.langware.en.Person'];
     }
 
     var data = {
-      'texts': posts, 
+      'texts': texts, 
       'annotations': annotationType
     };
 
@@ -81,7 +83,7 @@ exports.get = function (req, res) {
   });
 };
 
-// query analytics service to extract company or people names from posts
+// query analytics service to extract company or people names 
 function extractNames(type, data, cb) {
   // choose correct analytics service to hit
   var url = app.get('company_analytics_url');
@@ -108,8 +110,7 @@ function extractNames(type, data, cb) {
   // post to analytics service
   request.post(options, function (err, response, body) {
     if (err) {
-      console.log('Error extracting companies:');
-      console.log(err);
+      console.log('Error extracting companies: ' + err); 
       return cb(err);
     }
 
@@ -122,9 +123,10 @@ function extractNames(type, data, cb) {
 }
 
 
-// count number of mentions of company names after returned by IBM Text Analytics service
 function countMentions(response, cb) {
-  var posts = response.body;    // posts marked up with analytics metadata
+// count number of mentions of company names after returned by IBM Text Analytics service
+
+  var posts = response.body;   // posts marked up with analytics metadata
   var histogram = new Object(); // used to count occurrences of company or people name
 
   // iterate through each post to count number of mentions of names contained within all of the posts
@@ -133,7 +135,7 @@ function countMentions(response, cb) {
 
     analyzed.forEach(function (result) {
       var name = result['covered-text'].toLowerCase();
-      histogram[name] = (histogram[name] == null) ?  1 : histogram[name] + 1;
+      histogram[name] = histogram[name] == null ?  1 : histogram[name] + 1;
     });
   });
 

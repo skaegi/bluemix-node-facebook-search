@@ -68,7 +68,7 @@ function authenticate (cb) {
 
 
 // query facebook's search API getting results related to keyword
-exports.getResults = function (keyword, limit, cb) {
+exports.getResults = function (keyword, limit, result_type, cb) {
 	authenticate(function (err, bearer) {
 		var options = {
 			url: 'https://graph.facebook.com/search',
