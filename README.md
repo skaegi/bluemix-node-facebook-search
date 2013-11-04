@@ -68,6 +68,6 @@ After the application is deployed using **cf push**, you can check the status of
 
 Here are some screenshots of what the app will look like when it is running and functioning correctly. 
 
-![image](/images/workingApp1.png)
+![image](images/workingApp1.png)
     
-![image](/images/workingApp2.png)
+![image](images/workingApp2.png)
